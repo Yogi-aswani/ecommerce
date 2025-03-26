@@ -10,6 +10,7 @@ const Product = () => {
   const [modal, setModal] = useState(false);
   const [ViewModal, setViewModal] = useState(false);
   const [product, setProduct] = useState([]);
+  const [SingleproductView, setProductView] = useState([]);
   const [images, setImages] = useState([]);
   const [formData, setFormData] = useState({
     category: '',
@@ -57,7 +58,9 @@ const Product = () => {
           'authorization': `Bearer ${token}`
         }
       });
-      setModal(true);
+      setModal(false);
+      // getproducts();
+
       console.log(response.data);
 
     } catch (error) {
@@ -97,6 +100,7 @@ const Product = () => {
       });
       console.log(response.data);
       setViewModal(true);
+      setProductView(response.data);
        // Use the response data
       // Optionally, update the state or perform other actions with response.data
     }
@@ -230,103 +234,27 @@ const Product = () => {
                 <tbody>
                     <tr>
                         <th>Category</th>
-                        <td>Electronics</td>
+                        <td>{SingleproductView.category}</td>
                     </tr>
                     <tr>
                         <th>Product Name</th>
-                        <td>Laptop</td>
+                        <td>{SingleproductView.product_name}</td>
                     </tr>
                     <tr>
                         <th>Price</th>
-                        <td>$1200</td>
+                        <td>${SingleproductView.price}</td>
                     </tr>
                     <tr>
                         <th>Qty</th>
-                        <td>5</td>
+                        <td>{SingleproductView.qty}</td>
                     </tr>
                     <tr>
                         <th>Description</th>
-                        <td>High-performance laptop with SSD.</td>
+                        <td>{SingleproductView.description}</td>
                     </tr>
                     <tr>
-                        <th>Category</th>
+                        <th>Product Images</th>
                         <td>Clothing</td>
-                    </tr>
-                    <tr>
-                        <th>Product Name</th>
-                        <td>T-Shirt</td>
-                    </tr>
-                    <tr>
-                        <th>Price</th>
-                        <td>$25</td>
-                    </tr>
-                    <tr>
-                        <th>Qty</th>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <th>Description</th>
-                        <td>Cotton casual t-shirt.</td>
-                    </tr>
-                    <tr>
-                        <th>Category</th>
-                        <td>Books</td>
-                    </tr>
-                    <tr>
-                        <th>Product Name</th>
-                        <td>Science Fiction Novel</td>
-                    </tr>
-                    <tr>
-                        <th>Price</th>
-                        <td>$15</td>
-                    </tr>
-                    <tr>
-                        <th>Qty</th>
-                        <td>10</td>
-                    </tr>
-                    <tr>
-                        <th>Description</th>
-                        <td>A thrilling space adventure.</td>
-                    </tr>
-                      <tr>
-                        <th>Category</th>
-                        <td>Home Appliances</td>
-                    </tr>
-                    <tr>
-                        <th>Product Name</th>
-                        <td>Refrigerator</td>
-                    </tr>
-                    <tr>
-                        <th>Price</th>
-                        <td>$800</td>
-                    </tr>
-                    <tr>
-                        <th>Qty</th>
-                        <td>3</td>
-                    </tr>
-                    <tr>
-                        <th>Description</th>
-                        <td>Energy efficient refrigerator.</td>
-                    </tr>
-                      <tr>
-                        <th>Category</th>
-                        <td>Groceries</td>
-                    </tr>
-                    <tr>
-                        <th>Product Name</th>
-                        <td>Organic Apples</td>
-                    </tr>
-                    <tr>
-                        <th>Price</th>
-                        <td>$3</td>
-                    </tr>
-                    <tr>
-                        <th>Qty</th>
-                        <td>50</td>
-                    </tr>
-                    <tr>
-                        <th>Description</th>
-                        <td>Fresh and delicious organic apples.</td>
                     </tr>
                 </tbody>
             </table>

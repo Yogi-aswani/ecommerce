@@ -11,7 +11,11 @@ import ForgotPassword from './Components/auth/ForgotPassword';
 import Header from './Components/supplire/header';
 import SideBar from './Components/supplire/SideBar';
 import Product from './Components/supplire/Product';
-import Home from './Components/user/Home';
+import Home from './Components/user/Home';  
+import Main from './Components/user/Main';
+import ProductView from './Components/user/ProductView';
+import Cart from './Components/user/Cart';
+import Wishlist from './Components/user/Wishlist';
 
 
 function App() {
@@ -31,7 +35,11 @@ function App() {
             <Route path="/forgot" element={<ForgotPassword/>} />
             <Route path="/header" element={<Header/>} />
             <Route path="/product" element={<Product/>} />
-            <Route path="/home" element={<Home/>} />
+            <Route path="/home" element={<Main/>} />
+            {/* <Route path="/main" element={<Main/>} /> */}
+            <Route path="/productView/:id" element={<ProductView/>} />
+            <Route path="/cart" element={<Cart/>} />
+            <Route path="/wishlist" element={<Wishlist/>} />
           </Routes>
       </BrowserRouter>
     </>

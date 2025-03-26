@@ -5,6 +5,7 @@ dotenv.config();
 const cors = require('cors')
 const router = require('./Route/authRoute');
 const Supplier = require('./Route/supplierRoute');
+const User = require('./Route/userRoute');
 const fileupload = require('express-fileupload');
 const app = express();
 app.use(fileupload());
@@ -21,6 +22,7 @@ app.use(cors());
 
 app.use('/API',router);
 app.use('/API',Supplier);
+app.use('/API',User);
 
 // Start the server
 app.listen(PORT, () => {

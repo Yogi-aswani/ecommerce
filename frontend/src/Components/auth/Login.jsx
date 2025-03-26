@@ -27,9 +27,11 @@ const Login = () => {
                   localStorage.setItem('token', res.data.token);
                   localStorage.setItem('role', res.data.role);
                   localStorage.setItem('name', res.data.name);
+                  axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
                 console.log(res.data.token)
                   if(res.data.role === 'user'){
                     navigate('/home');
+                    window.location.reload();
                   } else if(res.data.role === 'supplier'){ 
                     navigate('/header');
                   }
