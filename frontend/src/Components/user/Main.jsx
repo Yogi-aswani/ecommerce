@@ -99,6 +99,9 @@ const Main = () => {
             </Link>
             <Link to="/address" className="list-group-item list-group-item-action">
               Address
+            </Link> 
+            <Link to="/yourOrders" className="list-group-item list-group-item-action">
+              Your Orders
             </Link>   
           </div>
         </div>

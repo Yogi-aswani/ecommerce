@@ -330,3 +330,19 @@ exports.editAdress = async(req,res)=>{
     }
     
 }
+
+exports.getYourOrders = async(req,res)=>{
+    try {
+        const getAllOrder = await SuppliOrder.find({ userId: req.user._id })
+            .populate('addressId') // Populate address details
+            .populate('productId'); // Populate product details
+        console.log(getAllOrder);
+        if (!getAllOrder || getAllOrder.length === 0) {
+            return res.status(404).json({ message: 'No orders found for this user' });
+        }
+        return res.status(200).json(getAllOrder);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}

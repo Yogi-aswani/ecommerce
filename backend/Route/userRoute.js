@@ -8,6 +8,7 @@ router.get('/getSingleProduct/:id', userController.getSingleProduct);
 router.post('/addWishlist', auth,userController.addWishlist);
 router.post('/addTocart', auth,userController.addTocart);
 router.get('/getAllCart', auth,userController.getAllCart);
+router.get('/getYourOrders', auth,userController.getYourOrders);
 router.get('/getAllWishlist', auth,userController.getAllWishlist);
 router.post('/addressAdd', auth,userController.addressAdd);
 router.post('/editAdress', auth,userController.editAdress);

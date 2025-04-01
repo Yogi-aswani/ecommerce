@@ -17,6 +17,7 @@ import ProductView from './Components/user/ProductView';
 import Cart from './Components/user/Cart';
 import Wishlist from './Components/user/Wishlist';
 import Address from './Components/user/address';
+import YourOrder from './Components/user/YourOrder';
 
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
             <Route path="/cart" element={<Cart/>} />
             <Route path="/wishlist" element={<Wishlist/>} />
             <Route path="/address" element={<Address/>} />
+            <Route path="/yourOrders" element={<YourOrder/>} />
           </Routes>
       </BrowserRouter>
     </>
