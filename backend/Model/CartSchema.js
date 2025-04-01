@@ -16,6 +16,11 @@ const CartSchema = new mongoose.Schema({
         required: true,
         default: 1,
     },
+    status:{
+        type:String,
+        required:true,
+        default:'pending'
+    }
 },{ timestamps: true,versionKey:false });
 
 module.exports = mongoose.model('Cart', CartSchema);

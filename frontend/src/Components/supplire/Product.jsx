@@ -159,7 +159,8 @@ const Product = () => {
     </table>
       </div>
     </div>
-  {modal && ( <div className="container mt-5">
+  {modal && ( 
+    <div className="container mt-5">
       <div className="modal fade" id="myFormModal" tabIndex="-1" aria-labelledby="myFormModalLabel" aria-hidden="true">
         <div className="modal-dialog modal-lg">
           <div className="modal-content">

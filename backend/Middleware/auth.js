@@ -5,7 +5,7 @@ const userModel = require('../Model/UserSchema')
 module.exports = async(req,res,next) =>{
   const token = req?.headers?.authorization;
   
-  console.log("....>>>>.Token >>>>",token)
+  // console.log("....>>>>.Token >>>>",token)
   if(!token){
     return res.status(401).json({massage:"Unauthoriza"});
   }
@@ -22,6 +22,7 @@ module.exports = async(req,res,next) =>{
   if(!user){
     return res.status(401).json({massage:'user not found'})
   }
+  
   req.user = user;
   next() 
 }
