@@ -336,7 +336,7 @@ exports.getYourOrders = async(req,res)=>{
         const getAllOrder = await SuppliOrder.find({ userId: req.user._id })
             .populate('addressId') // Populate address details
             .populate('productId'); // Populate product details
-        console.log(getAllOrder);
+        // console.log(getAllOrder);
         if (!getAllOrder || getAllOrder.length === 0) {
             return res.status(404).json({ message: 'No orders found for this user' });
         }

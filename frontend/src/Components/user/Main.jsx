@@ -129,7 +129,7 @@ const Main = () => {
                 </Link>
                     <div className="card-body d-flex flex-column">
                       <h5 className="card-title">{product.product_name}</h5>
-                      <p className="card-text">${product.price.toFixed(2)}</p>
+                      <p className="card-text">{product.price.toFixed(2)}</p>
                       <div className="mt-auto">
                         <button className="btn btn-primary me-2"onClick={(e)=>handleCart(product._id)}>Add to Cart</button>
                         <i className="bi bi-heart" style={{ cursor: 'pointer' }} onClick={(e)=>handleWishlist(product._id)}></i>
@@ -158,7 +158,7 @@ const Main = () => {
           </Link>
               <div className="card-body d-flex flex-column">
                 <h5 className="card-title">{product.product_name}</h5>
-                <p className="card-text">${product.price.toFixed(2)}</p>
+                <p className="card-text">{product.price.toFixed(2)}</p>
                 <div className="mt-auto">
                   <button className="btn btn-primary me-2" onClick={handleLink}>Add to Cart</button>
                   <i className="bi bi-heart" style={{cursor: 'pointer'}} onClick={handleLink}></i>

@@ -18,6 +18,7 @@ import Cart from './Components/user/Cart';
 import Wishlist from './Components/user/Wishlist';
 import Address from './Components/user/address';
 import YourOrder from './Components/user/YourOrder';
+import Orders from './Components/supplire/Orders';
 
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
             <Route path="/forgot" element={<ForgotPassword/>} />
             <Route path="/header" element={<Header/>} />
             <Route path="/product" element={<Product/>} />
+            <Route path="/orders" element={<Orders/>} />
             <Route path="/home" element={<Main/>} />
             {/* <Route path="/main" element={<Main/>} /> */}
             <Route path="/productView/:id" element={<ProductView/>} />
