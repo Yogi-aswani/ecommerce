@@ -25,3 +25,99 @@
 .logout-link {
     color: #dc3545; /* Red logout */
 }
+
+
+/* App.css or similar */
+#wrapper {
+    display: flex;
+    transition: margin-left 0.3s ease; /* Transition for left margin */
+  }
+  
+  #sidebar-wrapper {
+    background-color: #e9ecef; /* Light sidebar background */
+    min-height: 100vh;
+    width: 50px; /* Initial collapsed width */
+    transition: width 0.3s ease; /* Transition for width */
+    margin-left: 0; /* Initially visible */
+  }
+  
+  #sidebar-wrapper.sidebar-expanded-left {
+    width: 250px; /* Expanded width */
+  }
+  
+  #sidebar-wrapper .sidebar-heading {
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    color: #495057;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  
+  #sidebar-wrapper .list-group {
+    list-style: none;
+    padding: 0;
+  }
+  
+  #sidebar-wrapper .list-group-item {
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #495057;
+    display: flex;
+    align-items: center;
+    border: none;
+    background-color: transparent;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  
+  #sidebar-wrapper .list-group-item i {
+    margin-right: 10px; /* Space between icon and text */
+  }
+  
+  #sidebar-wrapper .list-group-item span {
+    flex-grow: 1; /* Allow text to take available space when expanded */
+  }
+  
+  #sidebar-wrapper .list-group-item:hover {
+    background-color: #dee2e6;
+  }
+  
+  #page-content-wrapper {
+    flex-grow: 1;
+    padding: 20px;
+  }
+  
+  /* Class to hide the sidebar initially */
+  .toggled #sidebar-wrapper {
+    width: 50px;
+  }
+  
+  /* Adjust margin for content when sidebar is collapsed */
+  .toggled #page-content-wrapper {
+    margin-left: 50px;
+  }
+  
+  /* Hide text when sidebar is collapsed */
+  .toggled #sidebar-wrapper:not(:hover) .list-group-item span {
+    display: none;
+  }
+  
+  .toggled #sidebar-wrapper:not(:hover) .sidebar-heading {
+    font-size: 1.2rem; /* Adjust icon size */
+  }
+  
+  .navbar {
+    background-color: #f8f9fa; /* Light header background */
+    padding: 15px 20px;
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  .navbar-brand {
+    font-weight: bold;
+    color: #495057;
+  }
+  
+  .user-info {
+    color: #495057;
+  }

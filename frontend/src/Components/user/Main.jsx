@@ -82,6 +82,14 @@ const Main = () => {
       console.log(error);
     }
   }
+
+  const showAlert = () => {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Product is out of stock',
+    });
+  }
   return (
     <>
     <Home/>
@@ -129,9 +137,33 @@ const Main = () => {
                 </Link>
                     <div className="card-body d-flex flex-column">
                       <h5 className="card-title">{product.product_name}</h5>
+                      <div style={{display: 'flex', justifyContent: 'space-between'}}>
                       <p className="card-text">{product.price.toFixed(2)}</p>
+                      {product.inventory.length > 0 ? (
+                       product.inventory.map((item) => (
+                        item.qty > 0 ? (
+                          <p key={item._id} className="card-text">Qty {item.qty}</p>
+                        ) : (
+                          <p key={item._id} className="card-text text-danger">Out of Stock</p>
+                        )
+                       ))
+                      ) : (
+                        <p className="card-text text-danger">Out of Stock</p>
+                      )}
+                      {/* <p className="card-text">Qty 5</p> */}
+                      </div>
                       <div className="mt-auto">
-                        <button className="btn btn-primary me-2"onClick={(e)=>handleCart(product._id)}>Add to Cart</button>
+                      {product.inventory.length > 0 ? (
+                       product.inventory.map((item) => (
+                        item.qty > 0 ? (
+                          <button className="btn btn-primary me-2" onClick={(e)=>handleCart(product._id)}>Add to Cart</button>
+                        ) : (
+                          <button className="btn btn-primary me-2" onClick={showAlert}>Add to Cart</button>
+                        )
+                       ))
+                      ) : (
+                        <button className="btn btn-primary me-2" onClick={showAlert}>Add to Cart</button>
+                      )}
                         <i className="bi bi-heart" style={{ cursor: 'pointer' }} onClick={(e)=>handleWishlist(product._id)}></i>
                       </div>
                     </div>
@@ -158,7 +190,20 @@ const Main = () => {
           </Link>
               <div className="card-body d-flex flex-column">
                 <h5 className="card-title">{product.product_name}</h5>
-                <p className="card-text">{product.price.toFixed(2)}</p>
+                <div>
+                    <p className="card-text">{product.price.toFixed(2)}</p>
+                    {product.inventory.length > 0 ? (
+                       product.inventory.map((item) => (
+                        item.qty > 0 ? (
+                          <p key={item._id} className="card-text">Qty {item.qty}</p>
+                        ) : (
+                          <p key={item._id} className="card-text text-danger">Out of Stock</p>
+                        )
+                       ))
+                      ) : (
+                        <p className="card-text text-danger">Out of Stock</p>
+                      )}  
+                </div>
                 <div className="mt-auto">
                   <button className="btn btn-primary me-2" onClick={handleLink}>Add to Cart</button>
                   <i className="bi bi-heart" style={{cursor: 'pointer'}} onClick={handleLink}></i>

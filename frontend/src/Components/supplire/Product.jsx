@@ -68,21 +68,21 @@ const Product = () => {
     }
 
   }
-  useEffect(() => {
-    const getproducts = async() => {
-      const token = localStorage.getItem('token')
-      try {
-        const response = await axios.get('http://localhost:7000/API/getAllProduct', {
-        headers: {
-          'authorization': `Bearer ${token}`
-        }
-        })
-        console.log(response.data)
-        setProduct(response.data)
-      } catch (error) {
-        console.log(error)
+  const getproducts = async() => {
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.get('http://localhost:7000/API/getAllProduct', {
+      headers: {
+        'authorization': `Bearer ${token}`
       }
+      })
+      console.log(response.data)
+      setProduct(response.data)
+    } catch (error) {
+      console.log(error)
     }
+  }
+  useEffect(() => {
     getproducts();
   }, []);
   let count = 1;

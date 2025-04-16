@@ -6,6 +6,7 @@ const User = require('../Model/UserSchema');
 const Cart = require('../Model/CartSchema'); 
 const Address = require('../Model/AdressSchema');
 const SuppliOrder = require('../Model/SupplireOrder');
+const Inventory = require('../Model/InventorySchema');
 
 const Order = require('../Model/OrderSchema'); // Ensure you have an Order schema
 
@@ -14,15 +15,24 @@ exports.ViewAllProduct = async (req, res) => {
         const products = await Product.aggregate([
             {
               $lookup: {
-                from: 'productimages', // The collection name for Productimages
-                localField: '_id', // Field in the Product collection
-                foreignField: 'productId', // Field in the Productimages collection
-                as: 'productImages', // Alias for the joined data
+            from: 'productimages', // The collection name for Productimages
+            localField: '_id', // Field in the Product collection
+            foreignField: 'productId', // Field in the Productimages collection
+            as: 'productImages', // Alias for the joined data
+              },
+            },
+            {
+              $lookup: {
+            from: 'inventories', // The collection name for Inventory
+            localField: '_id', // Field in the Product collection
+            foreignField: 'productId', // Field in the Inventory collection
+            as: 'inventory', // Alias for the joined data
               },
             },
           ]);
         // const products = await Productimages.find().populate('productId');
         console.log(products);
+        // return
         return res.status(200).json(products);
 
     } catch (error) {
@@ -84,12 +94,18 @@ exports.addTocart = async (req, res) => {
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
-        const newCart = new Cart({
+        const existingCart = await Cart.findOne({ userId: req.user._id, productId: productId });
+        if (existingCart) {
+            existingCart.quantity += 1;
+            await existingCart.save();
+        } else {
+            const newCart = new Cart({
             userId: req.user._id,
             productId: productId,
             quantity: 1,
-        });
-        await newCart.save();
+            });
+            await newCart.save();
+        }
         return res.status(200).json({ message: 'Added to Cart' });
     } catch (error) {
         console.error(error);
@@ -205,37 +221,50 @@ exports.PlaceOrder = async (req, res) => {
             if (!FindCart) {
                 return res.status(404).json({ message: `Cart item with id ${item._id} not found` });
             }
-            FindCart.status='complete'
-            await FindCart.save();
-            const FindSupplire = await Product.findById(FindCart.productId);
-            const newOrder = new Order({
-                userId: req.user._id,
-                cartId: item._id,
-                addressId: addressId,
-                payment_mode: payment_mode,
-                deliveryDate:Date.now()
-            });
+            const FindInventory = await Inventory.findOne({productId:FindCart.productId});
+            if (!FindInventory) {
+                return res.status(404).json({ message: `Inventory item with id ${item._id} not found` });
+            }
+            else{
+                if(FindInventory.qty<=FindCart.quantity){
 
-            const savedOrder = await newOrder.save();
-            orders.push(savedOrder);
-            const supplireOrder = new SuppliOrder({
-                supplireId:FindSupplire.supplierId,
-                userId:req.user._id,
-                productId:FindCart.productId,
-                addressId:addressId,
-                payment_mode:payment_mode,
-                orderId:savedOrder._id,
-                quantity:FindCart.quantity,
-            })
-            const saveSuppliOrder = await supplireOrder.save();
-            supplire_order.push(saveSuppliOrder);
-            
+                    const findProduct = await Product.findById(FindCart.productId);
+                    return res.status(404).json({ message: `${findProduct.product_name} is out of stock` });
+                }
+                else{
+                    FindCart.status='complete'
+                    await FindCart.save();
+                    const FindInventory = await Inventory.findOneAndUpdate(
+                        { productId: FindCart.productId }, // Filter condition to find the document
+                        { $inc: { qty: -FindCart.quantity } }, // Update operation to decrement the quantity
+                        { new: true } // Option to return the updated document
+                    );
+                    const FindSupplire = await Product.findById(FindCart.productId);
+                    const newOrder = new Order({
+                        userId: req.user._id,
+                        cartId: item._id,
+                        addressId: addressId,
+                        payment_mode: payment_mode,
+                        deliveryDate:Date.now()
+                    });
+
+                    const savedOrder = await newOrder.save();
+                    orders.push(savedOrder);
+                    const supplireOrder = new SuppliOrder({
+                        supplireId:FindSupplire.supplierId,
+                        userId:req.user._id,
+                        productId:FindCart.productId,
+                        addressId:addressId,
+                        payment_mode:payment_mode,
+                        orderId:savedOrder._id,
+                        quantity:FindCart.quantity,
+                    })
+                    const saveSuppliOrder = await supplireOrder.save();
+                    supplire_order.push(saveSuppliOrder);
+                    return res.status(200).json({ message: 'Order placed successfully', orders });
+                }
+            }                        
         }
-
-        // Optionally clear the cart after placing the order
-        // await Cart.deleteMany({ userId: req.user._id });
-
-        return res.status(200).json({ message: 'Order placed successfully', orders });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Internal server error' });
@@ -248,9 +277,19 @@ exports.plusQuantity = async(req,res)=>{
     try {
         const cart = await Cart.findOne({ _id: id, userId: req.user._id });
         if (!cart) {
-            return res.status(404).json({ message: 'Cart not found or not authorized to delete' });
+            return res.status(404).json({ message: 'Cart not found or not authorized to update' });
         }
-        cart.quantity=(cart.quantity)+1;
+
+        const inventory = await Inventory.findOne({ productId: cart.productId });
+        if (!inventory) {
+            return res.status(404).json({ message: 'Product not found in inventory' });
+        }
+
+        if (cart.quantity + 1 > inventory.qty) {
+            return res.status(400).json({ message: 'Insufficient stock in inventory' });
+        }
+
+        cart.quantity = cart.quantity + 1;
         await cart.save();
         return res.status(200).json({ message: 'successfully' });
     } catch (error) {
@@ -346,3 +385,51 @@ exports.getYourOrders = async(req,res)=>{
         return res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+exports.orderCancel = async(req,res)=>{
+    const { id } = req.params;
+    // console.log(id);
+    try {
+        const order = await SuppliOrder.findOneAndUpdate(
+            { _id: id, userId: req.user._id },
+            { status: 'cancel' }, // Update the status field
+            { new: true } // Return the updated document
+        );
+        if (order) {
+            // Increase the quantity back in the inventory table
+            await Inventory.findOneAndUpdate(
+            { productId: order.productId },
+            { $inc: { qty: order.quantity } }, // Increment the quantity
+            { new: true }
+            );
+        }
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found or not authorized to update' });
+        }
+        return res.status(200).json({ message: 'Order Cancel successfully' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+exports.orderReturn = async(req,res)=>{
+    const { id } = req.params;
+    // console.log(id);
+    try {
+        const order = await SuppliOrder.findOneAndUpdate(
+            
+            { _id: id, userId: req.user._id },
+            { status: 'return' }, // Update the status field
+            { new: true } // Return the updated document
+        );
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found or not authorized to update' });
+        }
+        return res.status(200).json({ message: 'Order Return successfully' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
+

@@ -19,6 +19,8 @@ import Wishlist from './Components/user/Wishlist';
 import Address from './Components/user/address';
 import YourOrder from './Components/user/YourOrder';
 import Orders from './Components/supplire/Orders';
+import DashBorad from './Components/Admin/DashBorad';
+import Inventory from './Components/supplire/Inventory';
 
 
 function App() {
@@ -31,6 +33,7 @@ function App() {
        
       <BrowserRouter>
           <Routes>
+            <Route exact path="/admin" element={<DashBorad/>} />
             <Route exact path="/" element={<UserSignup/>} />
             <Route path="/supplire" element={<Suppliresignup/>} />
             <Route path="/login" element={<Login/>} />
@@ -46,6 +49,7 @@ function App() {
             <Route path="/wishlist" element={<Wishlist/>} />
             <Route path="/address" element={<Address/>} />
             <Route path="/yourOrders" element={<YourOrder/>} />
+            <Route path="/inventory" element={<Inventory/>} />
           </Routes>
       </BrowserRouter>
     </>

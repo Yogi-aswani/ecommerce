@@ -1,8 +1,16 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate} from 'react-router-dom';
+const islogin = localStorage.getItem('token');
+// const name = localStorage.getItem('name');
+
 
 
 const header = () => {
+   const navigate = useNavigate();
+    const handleLogout = () => {
+      localStorage.clear();
+      navigate('/login');
+    }
   return (
     
     <>
@@ -23,10 +31,17 @@ const header = () => {
             <li className="nav-item">
               <Link to='/orders' className="nav-link active" aria-current="page" >Orders</Link>
             </li>
+            <li className="nav-item">
+              <Link to='/inventory' className="nav-link active" aria-current="page" >Inventory</Link>
+            </li>
           </ul>
           <ul className="navbar-nav">
+          
             <li className="nav-item">
-              <a className="nav-link" href="#">Logout</a>
+            {islogin ? (
+              <a className="nav-link"  onClick={handleLogout}>Logout</a>) : (
+              <Link className="nav-link logout-link" to={'/login'}>Login</Link>)
+          }
             </li>
           </ul>
         </div>

@@ -20,6 +20,8 @@ router.get('/cartDelete/:id', auth,userController.cartDelete);
 router.get('/wishListDelete/:id', auth,userController.wishListDelete);
 router.get('/plusQuantity/:id', auth,userController.plusQuantity);
 router.get('/MinusQuantity/:id', auth,userController.MinusQuantity);
+router.get('/orderCancel/:id', auth,userController.orderCancel);
+router.get('/orderReturn/:id', auth,userController.orderReturn);
 router.post('/PlaceOrder', auth,userController.PlaceOrder);
 
 

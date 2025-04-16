@@ -26,7 +26,7 @@ const getYourOrder = async() => {
 
 useEffect(() => {
 getYourOrder();
-    }, []);
+}, []);
 
 const handleActions = async(data)=>{
     try {
@@ -54,13 +54,31 @@ const handleActions = async(data)=>{
         console.log(error);
       }
     
-}    
+}  
+const handleFillter = (data) => {
+    if (data.action === "allproduct") {
+        getYourOrder(); // Fetch all orders again
+    } else {
+        const filteredData = cart.filter(item => item.status === data.action);
+        setCart(filteredData);
+
+    }
+};
+
     
 return (
  <>
     <Header/>
-    <div className="container-fluid mt-4">
-                 <h4>My Orders</h4>
+    <div className="container-fluid mt-4 d-flex justify-content-between align-items-center">
+        <h4>My Orders</h4>
+        <select name="" id="" className="form-select" style={{width:'200px'}} onChange={(e) => handleFillter({ action: e.target.value })}>
+            <option value="allproduct">All Product</option>
+            <option value="delivery">Deliverd</option>
+            <option value="cancel">Cancel</option>
+            <option value="approved">Returned</option>
+            <option value="packaging">Packaging</option>
+            <option value="initied">Inited</option>
+        </select>
     </div>
      
     <div className="d-flex">
@@ -94,14 +112,38 @@ return (
                             <td>{item.status}</td>
                             <td>
                             <div className="mb-3">
-                                <select className="form-select" id="category" name="category" onChange={(e) => handleActions({ action: e.target.value, id: item._id })} 
+                                <select className="form-select" value={item.status} id="category" name="category" onChange={(e) => handleActions({ action: e.target.value, id: item._id })} 
                                     required
                                 >
-                                <option value="initied">Actions</option>
-                                <option value="packaging">packaging</option>
-                                <option value="delivery">delivery</option>
-                                <option value="approved">approved</option>
-                                <option value="return">return</option>
+                                {item.status === "initied" && (
+                                    <>
+                                        <option value="">Initied</option>
+                                        <option value="cancel">Cancel</option>
+                                        <option value="packaging">Packaging</option>
+                                    </>
+                                )}
+                                {item.status === "packaging" && (
+                                    <>
+                                    <option value={item.status}>{item.status}</option>
+                                    <option value="delivery">Delivery</option>
+                                    </>
+                                )}
+                                {item.status === "return" && (
+                                    <>
+                                    <option value="">Order Return</option>
+                                    <option value="approved">Approved</option>
+                                    </>
+                                )}
+                                {item.status === "approved" && (
+                                    <option><p>Order Returned</p></option>   
+                                )}
+                                {item.status === "delivery" && (
+                                    <option><p>Order Delivered</p></option>
+                                )}
+                                {item.status === "cancel" && (
+                                    <option><p>Order Canceled</p></option>
+                                )}
+                               
                                 </select>
                             </div>
                             </td>

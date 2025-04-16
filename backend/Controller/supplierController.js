@@ -2,6 +2,7 @@ const Supplier = require('../Model/SupplireSchema');
 const User = require('../Model/UserSchema');
 const Product = require('../Model/ProductSchema');
 const ProductImages = require('../Model/Productimages');
+const Inventory = require('../Model/InventorySchema');
 const {FileUpload} = require('../Utility/cloudinary');
 const SuppliOrder = require('../Model/SupplireOrder');
 
@@ -40,6 +41,12 @@ exports.addProduct = async (req, res) => {
           image: uploadedFiles
         });
         await newProductImage.save();
+        const inventory = new Inventory({
+          productId: newProduct._id,
+          supplierId: supplire.supplier_id,
+          qty: qty,
+        });
+        await inventory.save();
         return res.status(200).json({ message: 'Product added' });
     
       } catch (error) {
@@ -116,11 +123,58 @@ exports.UpdateActions = async(req,res)=>{
       { new: true } // Return the updated document
     );
 
+     if (updatedOrder) {
+        if(action === 'approved'){
+          // Increase the quantity back in the inventory table
+          await Inventory.findOneAndUpdate(
+            { productId: updatedOrder.productId },
+            { $inc: { qty: updatedOrder.quantity } }, // Increment the quantity
+            { new: true }
+            );
+        }
+      }
+
     if (!updatedOrder) {
       return res.status(404).json({ message: 'Order not found' });
     }
 
     return res.status(200).json({ message: 'Order status updated', updatedOrder });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+exports.getAllInventory = async(req,res)=>{
+  const Supplire = await User.findById(req.user._id);
+  try {
+    if (!req.user || !req.user._id) {
+      return res.status(400).json({ message: 'Supplier ID is required' });
+    }
+    const inventory = await Inventory.find({ supplierId: Supplire.supplier_id })
+    .populate('productId'); // Populate product details
+    if (!inventory || inventory.length === 0) {
+      return res.status(404).json({ message: 'No inventory found' });
+    }
+    return res.status(200).json(inventory);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+}
+exports.updateInventory = async(req,res)=>{
+  const id = req.body.id;
+  const qty = req.body.qty;
+  try {
+    const updatedInventory = await Inventory.findByIdAndUpdate(
+      id,
+      { $inc: { qty: qty } }, // Increment the quantity
+      { new: true } // Return the updated document
+    );
+    if (!updatedInventory) {
+      return res.status(404).json({ message: 'Inventory not found' });
+    }
+    return res.status(200).json({ message: 'Inventory updated', updatedInventory });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Internal server error' });

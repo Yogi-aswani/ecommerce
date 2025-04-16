@@ -103,7 +103,7 @@ const Cart = () => {
           setPaymentMode(null);
       } catch (error) {
           console.error("Error placing order:", error);
-          Swal.fire({ icon: 'error', title: 'Failed to place order.' });
+          Swal.fire({ icon: 'error', title: error.response.data.message });
       }
   };
 
@@ -120,7 +120,7 @@ const Cart = () => {
         console.error("Error removing item:", error);
         Swal.fire({
             icon: 'error',
-            title: 'Failed to remove item',
+            title: error.response.data.message,
         });
     }
   };
